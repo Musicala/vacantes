@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Formulario de postulación docente Musicala" />
+  <title>Postulación docente Musicala</title>
+  <link rel="stylesheet" href="./formulario.css?v=20260629-2" />
+</head>
+<body>
+  <main class="form-page">
+    <img class="logo" src="./musicala-logo.png" alt="Musicala" />
+
+    <form id="applicationForm">
+      <header class="form-card form-header">
+        <div class="brand-line"></div>
+        <h1>Postulación docente Musicala</h1>
+        <p>¡Gracias por tu interés en hacer parte de Musicala! Completa el formulario para que podamos conocer tu experiencia artística y pedagógica.</p>
+        <small><span>*</span> Indica que la pregunta es obligatoria</small>
+      </header>
+
+      <section class="form-card">
+        <h2><span>1</span> Información personal</h2>
+        <div class="fields two-cols">
+          <label>Nombres y apellidos <b>*</b>
+            <input name="nombre" required autocomplete="name" />
+          </label>
+          <label>Tipo y número de documento <b>*</b>
+            <input name="documento" required placeholder="CC 1234567890" />
+          </label>
+          <label>Fecha de nacimiento <b>*</b>
+            <input name="fechaNacimiento" type="date" required />
+          </label>
+          <label>Localidad o municipio de residencia <b>*</b>
+            <input name="localidad" required />
+          </label>
+          <label class="full">Dirección de residencia <b>*</b>
+            <input name="direccion" required autocomplete="street-address" />
+          </label>
+          <label>Correo electrónico <b>*</b>
+            <input name="email" type="email" required autocomplete="email" />
+          </label>
+          <label>Celular <b>*</b>
+            <input name="celular" type="tel" required autocomplete="tel" />
+          </label>
+          <label>Teléfono fijo
+            <input name="telefonoFijo" type="tel" />
+          </label>
+          <label>Principal medio de transporte <b>*</b>
+            <select name="transporte" required>
+              <option value="">Selecciona</option>
+              <option>Caminar</option><option>Bicicleta</option><option>Transporte público</option>
+              <option>Moto</option><option>Carro</option><option>Otro</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="form-card">
+        <h2><span>2</span> Perfil docente y artístico</h2>
+        <div class="fields">
+          <label>¿Qué clases te gustaría dictar? <b>*</b>
+            <select name="areaPrincipal" required>
+              <option value="">Selecciona</option>
+              <option>Música</option><option>Danza</option><option>Artes plásticas</option>
+              <option>Teatro</option><option>Cheerleading</option><option>Otra</option>
+            </select>
+          </label>
+          <label>Instrumento o especialidad principal <b>*</b>
+            <input name="instrumento" required placeholder="Ej. piano, canto, ballet, dibujo" />
+          </label>
+          <label>¿Te gustaría añadir otra área?
+            <input name="otraArea1" />
+          </label>
+          <fieldset>
+            <legend>¿En qué modalidades te gustaría enfocarte? <b>*</b></legend>
+            <label class="option"><input type="checkbox" name="modalidades" value="Sede Musicala" /> Sede Musicala</label>
+            <label class="option"><input type="checkbox" name="modalidades" value="Presencial a domicilio" /> Presencial a domicilio</label>
+            <label class="option"><input type="checkbox" name="modalidades" value="Virtual" /> Virtual</label>
+          </fieldset>
+          <label>Estilos
+            <input name="estilos" placeholder="Ej. clásico, latino, urbano, folclórico" />
+          </label>
+          <label>Otra área o habilidad artística
+            <input name="otraArea2" />
+          </label>
+          <label>Énfasis o temas que puedes enseñar
+            <textarea name="enfasis" rows="3"></textarea>
+          </label>
+          <label>¿Deseas añadir otra área adicional?
+            <input name="otraArea3" />
+          </label>
+          <label>Reseña docente <b>*</b>
+            <textarea name="resena" rows="6" required placeholder="Cuéntanos sobre tu formación, experiencia artística y experiencia enseñando."></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="form-card">
+        <h2><span>3</span> Disponibilidad y enlaces</h2>
+        <div class="fields">
+          <label>Disponibilidad para dictar clases <b>*</b>
+            <textarea name="disponibilidad" rows="3" required placeholder="Días, horarios y zonas donde tienes disponibilidad"></textarea>
+          </label>
+          <label>Portafolio, video o perfil artístico
+            <input name="portafolioUrl" type="url" placeholder="YouTube, Instagram, Drive, sitio web..." />
+          </label>
+          <label>Enlace de Google Maps de tu ubicación
+            <input name="googleMaps" type="url" />
+          </label>
+          <label>Comentarios adicionales
+            <textarea name="comentarios" rows="3"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="form-card">
+        <h2><span>4</span> Hoja de vida</h2>
+        <p class="section-copy">Sube tu hoja de vida en PDF, DOC o DOCX. Tamaño máximo: 10 MB.</p>
+        <label class="upload-box" id="uploadBox">
+          <input id="hvFile" name="hvFile" type="file" required accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+          <span class="upload-icon">↑</span>
+          <strong>Seleccionar hoja de vida <b>*</b></strong>
+          <small id="fileName">Ningún archivo seleccionado</small>
+        </label>
+      </section>
+
+      <section id="additionalQuestionsSection" class="form-card hidden">
+        <h2><span>5</span> Información adicional</h2>
+        <div id="additionalQuestions" class="fields"></div>
+      </section>
+
+      <section class="form-card consent-card">
+        <label class="option">
+          <input name="consentimiento" type="checkbox" required />
+          Autorizo a Musicala a almacenar y usar esta información en procesos de selección y vinculación docente.
+        </label>
+      </section>
+
+      <div class="submit-row">
+        <button id="submitBtn" type="submit">Enviar postulación</button>
+        <span id="formStatus" role="status" aria-live="polite"></span>
+      </div>
+    </form>
+    <footer>Gracias por querer transformar vidas a través del arte.</footer>
+  </main>
+  <script type="module" src="./formulario.js?v=20260629-2"></script>
+</body>
+</html>

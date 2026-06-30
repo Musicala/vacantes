@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Musicala Talento Docente</title>
+  <meta name="description" content="Banco docente Musicala para buscar reemplazos, filtrar perfiles y recibir postulaciones." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <img class="brand-logo" src="./musicala-logo.png" alt="Musicala" />
+        <div>
+          <span>Talento Docente</span>
+        </div>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-btn active" data-view="dashboard">Inicio</button>
+        <button class="nav-btn" data-view="reemplazo">Buscar reemplazo</button>
+        <button class="nav-btn" data-view="docentes">Base docente</button>
+        <button class="nav-btn team-only" data-view="equipo">Equipo actual</button>
+        <button class="nav-btn team-only" data-view="postulaciones">Postulaciones</button>
+        <button class="nav-btn" data-view="formulario">Formulario público</button>
+        <button class="nav-btn admin-only" data-view="configuracion">Editar formulario</button>
+      </nav>
+
+      <div class="auth-card">
+        <div id="userBox" class="user-box">
+          <span class="muted">Sin sesión</span>
+        </div>
+        <button id="loginBtn" class="btn primary">Entrar con Google</button>
+        <button id="logoutBtn" class="btn ghost hidden">Cerrar sesión</button>
+      </div>
+    </aside>
+
+    <main class="content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Vida, alma y artes</p>
+          <h1 id="pageTitle">Banco docente Musicala</h1>
+        </div>
+        <div class="top-actions">
+          <button id="openNewTeacherBtn" class="btn primary admin-only">+ Agregar docente</button>
+          <button id="copyFormLinkBtn" class="btn subtle">Copiar link del formulario</button>
+        </div>
+      </header>
+
+      <section id="systemNotice" class="notice hidden"></section>
+
+      <section id="view-dashboard" class="view active">
+        <div class="hero">
+          <div>
+            <p class="eyebrow">Panel rápido</p>
+            <h2>Encuentra rápidamente quién puede asumir una clase.</h2>
+            <p>Busca por área, instrumento, ubicación, modalidad y disponibilidad. Compara las mejores opciones y contacta al docente directamente por WhatsApp.</p>
+          </div>
+          <div class="hero-card">
+            <span class="big-number" id="totalTeachers">0</span>
+            <span>docentes en base</span>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <span id="statHigh">0</span>
+            <p>Prioridad alta</p>
+          </article>
+          <article class="stat-card">
+            <span id="statMusic">0</span>
+            <p>Música</p>
+          </article>
+          <article class="stat-card">
+            <span id="statDance">0</span>
+            <p>Danza</p>
+          </article>
+          <article class="stat-card">
+            <span id="statArts">0</span>
+            <p>Artes plásticas</p>
+          </article>
+          <article class="stat-card">
+            <span id="statTheatre">0</span>
+            <p>Teatro</p>
+          </article>
+          <article class="stat-card">
+            <span id="statApplications">0</span>
+            <p>Postulaciones</p>
+          </article>
+        </div>
+
+        <div class="panel two-col">
+          <div>
+            <div class="section-head">
+              <h3>Necesidades activas</h3>
+              <button id="addNeedBtn" class="btn mini subtle admin-only">+ Agregar</button>
+            </div>
+            <div id="needsList" class="chips-list"></div>
+          </div>
+          <div>
+            <h3>Encuentra el docente adecuado</h3>
+            <ol class="soft-list">
+              <li>Ingresa el <strong>área o instrumento</strong> de la clase que necesitas asignar.</li>
+              <li>Agrega la <strong>fecha, horario, modalidad y zona</strong> para encontrar perfiles compatibles.</li>
+              <li>Revisa primero los docentes contratados y las personas con mejor coincidencia.</li>
+              <li>Confirma su disponibilidad por WhatsApp y registra el resultado en su perfil.</li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-reemplazo" class="view">
+        <div class="panel">
+          <h2>Buscar reemplazo</h2>
+          <p class="muted">Llena lo mínimo de la clase y el sistema ordena candidatos por encaje. No promete milagros, pero al menos no toca hacer scroll eterno.</p>
+          <div class="replacement-grid">
+            <label>Área
+              <select id="repArea">
+                <option value="">Cualquiera</option>
+                <option>Música</option>
+                <option>Danza</option>
+                <option>Artes plásticas</option>
+                <option>Teatro</option>
+                <option>Cheerleading</option>
+              </select>
+            </label>
+            <label>Instrumento / estilo / subárea
+              <input id="repSubarea" placeholder="Ej: piano, ballet, dibujo, teatro..." />
+            </label>
+          </div>
+          <div class="action-row">
+            <button id="runReplacementBtn" class="btn primary">Buscar mejores opciones</button>
+            <button id="clearReplacementBtn" class="btn ghost">Limpiar</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <h3>Opciones sugeridas</h3>
+              <p id="replacementSummary" class="muted">Aún no has buscado reemplazo.</p>
+            </div>
+          </div>
+          <div id="replacementResults" class="cards-grid"></div>
+        </div>
+      </section>
+
+      <section id="view-docentes" class="view">
+        <div class="panel sticky-filters">
+          <div class="section-head">
+            <div>
+              <h2>Base docente</h2>
+              <p class="muted">Filtros rápidos para encontrar perfiles sin sacrificar neuronas.</p>
+            </div>
+            <button id="exportCsvBtn" class="btn subtle team-only">Exportar CSV</button>
+          </div>
+          <div class="filters-grid">
+            <label>Buscar
+              <input id="searchInput" placeholder="Nombre, área, celular, localidad..." />
+            </label>
+            <label>Área
+              <select id="areaFilter">
+                <option value="">Todas</option>
+                <option>Música</option>
+                <option>Danza</option>
+                <option>Artes plásticas</option>
+                <option>Teatro</option>
+                <option>Cheerleading</option>
+              </select>
+            </label>
+            <label>Subárea
+              <input id="subareaFilter" placeholder="Ej: batería, latino..." />
+            </label>
+            <label>Localidad
+              <input id="localityFilter" placeholder="Ej: Madrid, Suba..." />
+            </label>
+            <label>Modalidad
+              <select id="modeFilter">
+                <option value="">Todas</option>
+                <option>Sede Musicala</option>
+                <option>Presencial a domicilio</option>
+                <option>Virtual</option>
+              </select>
+            </label>
+            <label>Estado
+              <select id="statusFilter">
+                <option value="">Todos</option>
+                <option>Nuevo</option>
+                <option>Contactado</option>
+                <option>Entrevistado</option>
+                <option>Opcionado</option>
+                <option>Seleccionada HV</option>
+                <option>En proceso de entrevista</option>
+                <option>Banco de talento</option>
+                <option>Contratado</option>
+                <option>Descartado</option>
+              </select>
+            </label>
+          </div>
+        </div>
+
+        <div class="results-bar">
+          <strong id="resultsCount">0 resultados</strong>
+          <span class="muted" id="activeFiltersText"></span>
+        </div>
+        <div id="teachersGrid" class="cards-grid"></div>
+      </section>
+
+      <section id="view-postulaciones" class="view">
+        <div class="panel">
+          <h2>Postulaciones recibidas</h2>
+          <p class="muted">Aquí caen los formularios públicos. Revísalas y pásalas a la base docente cuando tengan sentido.</p>
+          <div id="applicationsList" class="cards-grid"></div>
+        </div>
+      </section>
+
+      <section id="view-equipo" class="view">
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <h2>Equipo docente actual</h2>
+              <p class="muted">Docentes marcados como contratados o vinculados.</p>
+            </div>
+            <strong id="teamCount" class="metric-inline">0 docentes</strong>
+          </div>
+          <div id="teamTeachersGrid" class="cards-grid"></div>
+        </div>
+      </section>
+
+      <section id="view-formulario" class="view">
+        <div class="panel form-panel">
+          <h2>Formulario de inscripción docente</h2>
+          <p class="muted">Este formulario puede compartirse con candidatos. Queda guardado en <strong>postulaciones</strong>, no entra directo a la base aprobada.</p>
+          <form id="publicApplicationForm" class="form-grid">
+            <label>Nombres y apellidos *
+              <input name="nombre" required placeholder="Tu nombre completo" />
+            </label>
+            <label>Correo electrónico *
+              <input name="email" type="email" required placeholder="correo@ejemplo.com" />
+            </label>
+            <label>Celular *
+              <input name="celular" required placeholder="3001234567" />
+            </label>
+            <label>Localidad / municipio
+              <input name="localidad" placeholder="Ej: Madrid, Suba, Mosquera..." />
+            </label>
+            <label>Medio de transporte
+              <select name="transporte">
+                <option value="">Selecciona</option>
+                <option>Caminar</option>
+                <option>Bicicleta</option>
+                <option>Transporte Público</option>
+                <option>Moto</option>
+                <option>Carro</option>
+              </select>
+            </label>
+            <label>Área principal *
+              <select name="areaPrincipal" required>
+                <option value="">Selecciona</option>
+                <option>Música</option>
+                <option>Danza</option>
+                <option>Artes plásticas</option>
+                <option>Teatro</option>
+                <option>Cheerleading</option>
+              </select>
+            </label>
+            <label>Subáreas / instrumentos / estilos *
+              <input name="subareas" required placeholder="Ej: piano, guitarra, ballet, dibujo..." />
+            </label>
+            <label>Modalidades
+              <input name="modalidades" placeholder="Sede Musicala, domicilio, virtual..." />
+            </label>
+            <label>Disponibilidad
+              <input name="disponibilidad" placeholder="Ej: lunes tarde, sábados mañana..." />
+            </label>
+            <label>Link HV
+              <input name="hvUrl" type="url" placeholder="Google Drive, PDF, web..." />
+            </label>
+            <label>Portafolio / video / redes
+              <input name="portafolioUrl" type="url" placeholder="Instagram, YouTube, showreel..." />
+            </label>
+            <label class="full">Reseña docente
+              <textarea name="resena" rows="4" placeholder="Cuéntanos brevemente tu experiencia artística y pedagógica."></textarea>
+            </label>
+            <div id="customFormFields" class="form-grid full embedded-grid"></div>
+            <label class="full consent">
+              <input name="consentimiento" type="checkbox" required />
+              <span>Acepto que Musicala use estos datos para procesos de selección docente.</span>
+            </label>
+            <button class="btn primary full" type="submit">Enviar postulación</button>
+            <p id="formStatus" class="form-status full"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="view-configuracion" class="view">
+        <div class="panel form-editor-intro">
+          <p class="eyebrow">Formulario público</p>
+          <h2>Edita lo que verán los candidatos</h2>
+          <p class="muted">Modifica las preguntas abajo y pulsa <strong>Guardar formulario</strong>. La vista previa y el enlace público se actualizarán con esos cambios.</p>
+        </div>
+        <div class="panel">
+          <h2>Configuración operativa</h2>
+          <p class="muted">Usuarios permitidos en esta versión. Para cambiar permisos reales, actualiza también <code>firestore.rules</code>.</p>
+          <div id="teamConfig" class="team-config"></div>
+        </div>
+        <div class="panel">
+          <h2>Editar formulario público</h2>
+          <p class="muted">Los cambios que guardes aquí aparecerán en el enlace público que reciben los candidatos.</p>
+          <form id="formConfigEditor" class="form-grid compact">
+            <label class="full">Título del formulario
+              <input name="title" />
+            </label>
+            <label class="full">Texto de introducción
+              <textarea name="intro" rows="3"></textarea>
+            </label>
+            <div class="full">
+              <h3>Preguntas del formulario</h3>
+              <p class="muted">Cambia el texto o desactiva preguntas opcionales que no quieras mostrar.</p>
+              <div id="baseFormFieldsEditor" class="field-editor-list"></div>
+            </div>
+            <label class="full">Preguntas adicionales
+              <textarea name="questions" rows="7" placeholder="Una pregunta por línea. Agrega * al final para hacerla obligatoria."></textarea>
+            </label>
+            <button class="btn primary" type="submit">Guardar formulario</button>
+            <p id="formConfigStatus" class="form-status"></p>
+          </form>
+        </div>
+        <div class="panel">
+          <div class="section-head">
+            <div>
+              <h2>Vista previa pública</h2>
+              <p class="muted">Esta es la misma página que verán las personas que reciban el enlace.</p>
+            </div>
+            <a class="btn subtle" href="./formulario.html" target="_blank" rel="noreferrer">Abrir en otra pestaña</a>
+          </div>
+          <iframe id="publicFormPreview" class="form-preview" src="./formulario.html" title="Vista previa del formulario público"></iframe>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="teacherDialog">
+    <form id="teacherForm" method="dialog" class="dialog-form">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">Base docente</p>
+          <h2 id="teacherDialogTitle">Agregar docente</h2>
+        </div>
+        <button type="button" id="closeTeacherDialog" class="icon-btn">×</button>
+      </div>
+
+      <input type="hidden" name="id" />
+      <div class="form-grid compact">
+        <label>Nombres y apellidos *
+          <input name="nombre" required />
+        </label>
+        <label>Celular
+          <input name="celular" />
+        </label>
+        <label>Correo
+          <input name="email" type="email" />
+        </label>
+        <label>Localidad
+          <input name="localidad" />
+        </label>
+        <label>Transporte
+          <select name="transporte">
+            <option value="">Sin dato</option>
+            <option>Caminar</option>
+            <option>Bicicleta</option>
+            <option>Transporte Público</option>
+            <option>Moto</option>
+            <option>Carro</option>
+          </select>
+        </label>
+        <label>Estado
+          <select name="estado">
+            <option>Nuevo</option>
+            <option>Contactado</option>
+            <option>Entrevistado</option>
+            <option>Opcionado</option>
+            <option>Seleccionada HV</option>
+            <option>En proceso de entrevista</option>
+            <option>Banco de talento</option>
+            <option>Contratado</option>
+            <option>Descartado</option>
+          </select>
+        </label>
+        <label>Prioridad
+          <select name="prioridad">
+            <option>Baja</option>
+            <option selected>Media</option>
+            <option>Alta</option>
+            <option>Urgente</option>
+          </select>
+        </label>
+        <label class="check-field">Equipo actual
+          <span><input name="equipoActual" type="checkbox" /> Docente contratado o vinculado</span>
+        </label>
+        <label>Áreas
+          <input name="areas" placeholder="Música, Danza..." />
+        </label>
+        <label>Subáreas
+          <input name="subareas" placeholder="Piano, Ballet, Dibujo..." />
+        </label>
+        <label>Modalidades
+          <input name="modalidades" placeholder="Sede Musicala, domicilio..." />
+        </label>
+        <label>Días disponibles
+          <input name="dias" placeholder="lunes, martes, sábado..." />
+        </label>
+        <label>Franjas disponibles
+          <input name="franjas" placeholder="mañana, tarde, noche..." />
+        </label>
+        <label>HV
+          <input name="hvUrl" type="url" />
+        </label>
+        <label>Portafolio
+          <input name="portafolioUrl" type="url" />
+        </label>
+        <label class="full">Notas internas
+          <textarea name="notas" rows="4"></textarea>
+        </label>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" id="deleteTeacherBtn" class="btn danger hidden">Eliminar</button>
+        <span class="spacer"></span>
+        <button type="button" id="cancelTeacherBtn" class="btn ghost">Cancelar</button>
+        <button type="submit" class="btn primary">Guardar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="teacherDetailsDialog">
+    <div class="dialog-form">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">Ficha docente</p>
+          <h2 id="teacherDetailsTitle">Información completa</h2>
+        </div>
+        <button type="button" id="closeTeacherDetails" class="icon-btn" aria-label="Cerrar">×</button>
+      </div>
+      <div id="teacherDetailsContent" class="details-content"></div>
+      <div class="dialog-actions">
+        <span class="spacer"></span>
+        <button type="button" id="closeTeacherDetailsBottom" class="btn primary">Cerrar</button>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="needDialog">
+    <form id="needForm" class="dialog-form">
+      <div class="dialog-head">
+        <div>
+          <p class="eyebrow">Planeación docente</p>
+          <h2 id="needDialogTitle">Agregar necesidad</h2>
+        </div>
+        <button type="button" id="closeNeedDialog" class="icon-btn" aria-label="Cerrar">×</button>
+      </div>
+      <input type="hidden" name="id" />
+      <div class="form-grid compact">
+        <label>Área *
+          <select name="area" required>
+            <option value="">Selecciona</option>
+            <option>Música</option>
+            <option>Danza</option>
+            <option>Artes plásticas</option>
+            <option>Teatro</option>
+            <option>Cheerleading</option>
+          </select>
+        </label>
+        <label>Instrumento, estilo o subárea *
+          <input name="subarea" required placeholder="Ej. Piano, Ballet, Dibujo" />
+        </label>
+        <label>Estado
+          <select name="estado">
+            <option>Por cubrir</option>
+            <option>En búsqueda</option>
+            <option>En entrevistas</option>
+            <option>Cubierta</option>
+            <option>Pausada</option>
+          </select>
+        </label>
+        <label>Prioridad
+          <select name="urgencia">
+            <option>Baja</option>
+            <option selected>Media</option>
+            <option>Alta</option>
+            <option>Urgente</option>
+          </select>
+        </label>
+        <label class="full">Notas
+          <textarea name="notas" rows="3"></textarea>
+        </label>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" id="deleteNeedBtn" class="btn danger hidden">Eliminar</button>
+        <span class="spacer"></span>
+        <button type="button" id="cancelNeedBtn" class="btn ghost">Cancelar</button>
+        <button type="submit" class="btn primary">Guardar necesidad</button>
+      </div>
+    </form>
+  </dialog>
+
+  <template id="teacherCardTemplate">
+    <article class="teacher-card">
+      <div class="card-top">
+        <div>
+          <h3 class="teacher-name"></h3>
+          <p class="teacher-meta"></p>
+        </div>
+        <span class="badge status"></span>
+      </div>
+      <div class="chip-row areas"></div>
+      <p class="teacher-subareas"></p>
+      <p class="teacher-notes"></p>
+      <div class="card-actions">
+        <a class="btn mini whatsapp" target="_blank" rel="noreferrer">WhatsApp</a>
+        <a class="btn mini email-link">Correo</a>
+        <a class="btn mini hv-link" target="_blank" rel="noreferrer">HV</a>
+        <button class="btn mini subtle edit-btn admin-only">Editar</button>
+      </div>
+    </article>
+  </template>
+
+  <script type="module" src="./app.js?v=20260629-2"></script>
+</body>
+</html>

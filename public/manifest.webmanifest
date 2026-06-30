@@ -1,0 +1,9 @@
+{
+  "name": "Musicala Talento Docente",
+  "short_name": "Docentes Musicala",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f7f2ff",
+  "theme_color": "#6f35d4",
+  "icons": []
+}

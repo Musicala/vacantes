@@ -1,0 +1,71 @@
+{
+  "version": "2026-06-13",
+  "necesidades": [
+    {
+      "area": "Música",
+      "subarea": "Piano",
+      "urgencia": "Media",
+      "estado": "Por cubrir"
+    },
+    {
+      "area": "Música",
+      "subarea": "Violín",
+      "urgencia": "Media",
+      "estado": "Por cubrir"
+    },
+    {
+      "area": "Música",
+      "subarea": "Cello",
+      "urgencia": "Media",
+      "estado": "Por cubrir"
+    },
+    {
+      "area": "Música",
+      "subarea": "Batería",
+      "urgencia": "Media",
+      "estado": "Por cubrir"
+    },
+    {
+      "area": "Música",
+      "subarea": "Guitarra eléctrica",
+      "urgencia": "Media",
+      "estado": "Por cubrir"
+    },
+    {
+      "area": "Danza",
+      "subarea": "Urbano",
+      "urgencia": "Media",
+      "estado": "Por cubrir"
+    },
+    {
+      "area": "Danza",
+      "subarea": "Latino",
+      "urgencia": "Alto",
+      "estado": "Por cubrir"
+    },
+    {
+      "area": "Danza",
+      "subarea": "Ballet",
+      "urgencia": "Media",
+      "estado": "Por cubrir"
+    },
+    {
+      "area": "Arte",
+      "subarea": "Dibujo",
+      "urgencia": "Media",
+      "estado": "Por cubrir"
+    },
+    {
+      "area": "Arte",
+      "subarea": "Pintura",
+      "urgencia": "Media",
+      "estado": "Por cubrir"
+    },
+    {
+      "area": "Arte",
+      "subarea": "Manualidades",
+      "urgencia": "Media",
+      "estado": "Por cubrir"
+    }
+  ]
+}
